@@ -81,6 +81,15 @@ def calculate_GIL( EQ_classes, EQ_stats, total_stats, QI_SET ):
 
 ##############################################################################
 
+def calculate_DM( EQ_classes ):
+    # Calculate Discernibility Metric
+    DM = 0
+    for EQ in EQ_classes:
+        DM = DM + (len(EQ) ** 2)
+    return DM
+
+##############################################################################
+
 def get_distinct_data(data, QI_SET):
     # Returns a dictionary with all unique values per QI in QI_SET
     # data_distinct = {

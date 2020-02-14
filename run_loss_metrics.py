@@ -5,7 +5,7 @@ from db import MongoRepository
 import settings.etl_mondrian_settings as PARAMETERS
 from settings.ontology_settings import ONTOLOGIES
 
-from analyze_data import get_EQ_classes, get_EQs_stats, get_Partition_stats, calculate_GIL
+from analyze_data import get_EQ_classes, get_EQs_stats, get_Partition_stats, calculate_GIL, calculate_DM
 
 ########################################################
 # MongoDB parameters
@@ -21,6 +21,8 @@ EQ_classes = {}
 EQ_stats = {}
 total_stats = {}
 GIL = {}
+DM = {}
+metrics = {}
 ontologies = ONTOLOGIES
 
 for ontology_name in ontologies:   
@@ -51,10 +53,16 @@ for ontology_name in ontologies:
 
     #########################################################
     # Calculate metrics
-    GIL[ontology_name] = calculate_GIL( EQ_classes[ontology_name], EQ_stats[ontology_name], 
+    metrics[ontology_name] = {}
+    metrics[ontology_name]["GIL"] = calculate_GIL( EQ_classes[ontology_name], EQ_stats[ontology_name], 
                                         total_stats[ontology_name], QI_SET )
 
-    print(f"GIL for {ontology_name} = { GIL[ontology_name] }")
+    print(f"GIL for {ontology_name} = { metrics[ontology_name]['GIL'] }")
+
+    metrics[ontology_name]["DM"]  = calculate_DM( EQ_classes[ontology_name] )
+
+    print(f"DM for {ontology_name} = { metrics[ontology_name]['DM'] } ")
+
 
     #########################################################
 
