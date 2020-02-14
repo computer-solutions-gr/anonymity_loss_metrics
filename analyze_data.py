@@ -90,6 +90,15 @@ def calculate_DM( EQ_classes ):
 
 ##############################################################################
 
+def calculate_CAVG( EQ_classes, k ):
+    # Calculate Average EQ class size metric
+    total_EQs = len(EQ_classes)
+    total_records = sum( [len(EQ) for EQ in EQ_classes] )
+    C_avg = total_records / (total_EQs * k)        
+    return C_avg 
+
+##############################################################################
+
 def get_distinct_data(data, QI_SET):
     # Returns a dictionary with all unique values per QI in QI_SET
     # data_distinct = {
