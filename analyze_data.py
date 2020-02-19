@@ -1,8 +1,33 @@
 import itertools
-import settings.etl_mondrian_settings as PARAMETERS
-from settings.ontology_settings import ONTOLOGIES
+# import settings.etl_settings as PARAMETERS
+# from settings.ontology_settings import ONTOLOGIES
 from utils_parameters import set_key_order, set_categories
 from utils_numbers import get_number
+
+##############################################################################
+
+def analyze_table(data, QI_SET, CATEGORICAL, K):
+    # data should be a list of dicts
+    # data = [
+    # {"field1": "val11", "field2": "val12", ...  }
+    # {"field1": "val21", "field2": "val22", ...  }
+    #]
+
+    # Get stats for whole table
+    total_stats = get_Partition_stats( data, QI_SET, CATEGORICAL)
+
+    # Get EQuivalence classes & their stats for GILs      
+    EQ_classes = get_EQ_classes( data, QI_SET )
+    
+    EQ_stats = get_EQs_stats( EQ_classes, QI_SET, CATEGORICAL)
+
+    # Calculate metrics
+    metrics = {}
+    metrics["GIL"] = calculate_GIL( EQ_classes, EQ_stats, total_stats, QI_SET )
+    metrics["DM"] = calculate_DM( EQ_classes )
+    metrics["C_AVG"] = calculate_CAVG( EQ_classes, K )
+
+    return EQ_classes, total_stats, EQ_stats, metrics
 
 ##############################################################################
 
@@ -19,7 +44,7 @@ def get_Partition_stats(Partition, QI_SET, CATEGORICAL):
     for qi in QI_SET:  
         if CATEGORICAL[qi]==1:
             try:      
-                Partition_stats[qi] = len(Partition_data_distinct[qi])
+                Partition_stats[qi] = len(Partition_data_distinct[qi])-1
             except:
                 Partition_stats[qi] = 0
         else:
@@ -52,7 +77,7 @@ def get_EQs_stats(EQ_classes, QI_SET, CATEGORICAL):
 ##############################################################################
 
 def get_EQ_classes(data, QI_SET):
-    # Get all EQuivalence classes from data based on QI_SET
+    # Returns all EQuivalence classes from data based on QI_SET
 
     EQ_classes = []    
     for key, group in itertools.groupby(data, lambda x: [x[qi] for qi in QI_SET] ):
@@ -100,6 +125,8 @@ def calculate_CAVG( EQ_classes, k ):
 ##############################################################################
 
 def get_distinct_data(data, QI_SET):
+    # Accepts data as a list of dicts! 
+
     # Returns a dictionary with all unique values per QI in QI_SET
     # data_distinct = {
     #   "key1": ["val11", "val12"],
@@ -109,14 +136,9 @@ def get_distinct_data(data, QI_SET):
     data_distinct = {}
     for qi in QI_SET:
         data_distinct[qi] = set()
-    # for key, val in QI.items(): 
-    #     data_distinct[key] = set()
 
     for doc in data:
-        for qi in QI_SET:
-        # for key, val in QI.items():  
-        #     if val==0:
-        #         continue          
+        for qi in QI_SET:        
             doc_field_vals = doc[qi].split("~")
             data_distinct[qi].update(doc_field_vals)
 
