@@ -7,9 +7,9 @@ import pymongo
 
 class MongoRepository:
 
-    def __init__(self, host="localhost", port=27017, db_name = "etl_test"):
+    def __init__(self, host = "localhost", port = 27017, schema = "etl_test"):
         self.client = pymongo.MongoClient(host,port)
-        self.db = self.client[db_name]
+        self.db = self.client[schema]
         # self.db = self.client.etl_test
 
     def list_all(self, resourceType):

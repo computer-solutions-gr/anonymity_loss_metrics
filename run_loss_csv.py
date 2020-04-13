@@ -7,7 +7,7 @@ import json
 
 from analyze_data import analyze_table
 
-import settings.csv_settings as SETTINGS
+import settings.csvdata_settings as SETTINGS
 
 #########################################################
 # GET/SET PARAMETERS
@@ -24,10 +24,10 @@ K = getattr(SETTINGS, "K")
 ########################################################
 # SET FILENAMES
 
-in_dir = "/home/arianna/CSL/ml_anon/data/Results_QI=AGE,SEX,OUTCOME/"
+in_dir = "/home/arianna/CSL/ml_anon/data/Results_QI=AGE,SEX,CURADM_DAYS/"
 in_file = f"{in_dir}data_k={K}.csv"
 
-result_dir = f"{in_dir}/metrics/"
+result_dir = f"{in_dir}metrics/"
 Path(result_dir).mkdir(parents=True, exist_ok=True)
 
 result_file = f"{result_dir}metrics_k={K}.txt"

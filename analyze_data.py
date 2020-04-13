@@ -26,6 +26,7 @@ def analyze_table(data, QI_SET, CATEGORICAL, K):
     metrics["GIL"] = calculate_GIL( EQ_classes, EQ_stats, total_stats, QI_SET )
     metrics["DM"] = calculate_DM( EQ_classes )
     metrics["C_AVG"] = calculate_CAVG( EQ_classes, K )
+    metrics["Number of EQs"] = len(EQ_classes)
 
     return EQ_classes, total_stats, EQ_stats, metrics
 
