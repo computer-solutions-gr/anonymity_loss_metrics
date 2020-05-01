@@ -1,5 +1,5 @@
 import itertools
-from partition import Partition
+from core.partition import Partition
 
 class Dataset():   
 
@@ -30,31 +30,6 @@ class Dataset():
             EQs.append( list(group) )
 
         return EQs
-
-    #############################################################################
-    # def analyze_dataset(self, data, QI_SET, CATEGORICAL, K):
-    # def analyze_dataset(self):        
-
-    #     # # Get stats for whole table
-    #     # whole_dataset_stats = self.get_partition_stats(self.data)
-
-    #     # # Get stats for each EQ
-    #     # EQs_stats = []       
-    #     # for EQ in self.EQs:
-    #     #     EQ_stats = self.get_partition_stats( EQ )
-    #     #     EQs_stats.append(EQ_stats)
-    #     # pass
-
-    #     # Calculate metrics
-    #     metrics = {}
-    #     # metrics["GIL"] = calculate_GIL( EQ_stats, total_stats )
-    #     metrics["GIL"] = calculate_GIL()
-    #     metrics["DM"] = calculate_DM()
-    #     metrics["C_AVG"] = calculate_CAVG()
-    #     metrics["Number of EQs"] = len( self.EQs )
-
-    #     return EQ_classes, total_stats, EQ_stats, metrics
-
     
     #############################################################################
     def get_partition_stats(self, partition_data):
@@ -65,6 +40,7 @@ class Dataset():
     #############################################################################
 
     # def calculate_GIL( self, EQ_stats, total_stats):
+    
     def calculate_GIL( self ):
         # Calculate Generalized Information Loss for dataset
 

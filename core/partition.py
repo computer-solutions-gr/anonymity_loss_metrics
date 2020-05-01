@@ -1,4 +1,5 @@
-from utils_numbers import get_number
+from core.utils_numbers import get_number
+
 class Partition():
 
     def __init__(self, data, QI_SET, CATEGORICAL):
@@ -11,8 +12,8 @@ class Partition():
 
     #########################################################
 
-    # def get_Partition_stats(self):
     def get_stats(self):
+        # self.data is a list of dicts!
         # Returns:
         # Partition_stats : {
         #   "address" : Number of distinct values in Partition (categorical attrs)

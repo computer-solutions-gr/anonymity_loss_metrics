@@ -5,10 +5,10 @@ import os
 from pathlib import Path
 import json
 
-from analyze_data import analyze_table
+# from analyze_data import analyze_table
+from core.dataset import Dataset
 
-
-import settings.csvdata_settings as SETTINGS
+import settings.CSVdata_settings as SETTINGS
 
 #########################################################
 # GET/SET PARAMETERS
@@ -25,10 +25,10 @@ K = getattr(SETTINGS, "K")
 ########################################################
 # SET FILENAMES
 
-in_dir = "/home/arianna/CSL/ml_anon/data/Results_QI=AGE,SEX,CURADM_DAYS/"
+in_dir = "/home/arianna/CSL/anonymity_ml/data/Results_QI=AGE,SEX,CURADM_DAYS/"
 in_file = f"{in_dir}data_k={K}.csv"
 
-result_dir = f"{in_dir}metrics/"
+result_dir = f"{in_dir}information_loss_2020_5/"
 Path(result_dir).mkdir(parents=True, exist_ok=True)
 
 result_file = f"{result_dir}metrics_k={K}.txt"
@@ -58,8 +58,15 @@ for line in data_in:
     data.append(d)
 
 #########################################################
+dataset = Dataset(data, QI_SET, CATEGORICAL, K)
+metrics = {
+    "GIL": dataset.calculate_GIL(),
+    "DM": dataset.calculate_DM(),
+    "CAVG": dataset.calculate_CAVG(),
+    "Number of EQs": len(dataset.EQs)
+}
 
-(EQ_classes, total_stats, EQ_stats, metrics) = analyze_table(data, QI_SET, CATEGORICAL, K)
+# (EQ_classes, total_stats, EQ_stats, metrics) = analyze_table(data, QI_SET, CATEGORICAL, K)
 
 #########################################################
 # SAVE RESULTS TO CSV

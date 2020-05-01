@@ -5,13 +5,13 @@ import copy
 import os
 from pathlib import Path
 import json
-from db import MongoRepository
+from repositories.MongoRepository import MongoRepository
 
 # from analyze_data import analyze_table
-from dataset import Dataset
+from core.dataset import Dataset
 
-import settings.etl_settings as ETL_SETTINGS
-import settings.db_settings as DB_SETTINGS
+import settings.Mondrian_settings as MONDRIAN_SETTINGS
+import settings.DB_settings as DB_SETTINGS
 
 ########################################################
 # DB Parameters
@@ -32,9 +32,7 @@ result_file = f"{result_dir}{schemata}_metrics_2020_5.txt"
 
 data_all = {}
 metrics_all = {}
-# total_stats_all = {}
-# EQ_classes_all = {}
-# EQ_stats_all = {}
+
 
 ONTOLOGIES = [ "Patient" ]
 
@@ -62,7 +60,7 @@ for ontology in ONTOLOGIES:
     ########################################################
     # GET ONTOLOGY PARAMETERS
 
-    ONTOLOGY_SETTINGS = getattr(ETL_SETTINGS, ontology) 
+    ONTOLOGY_SETTINGS = getattr(MONDRIAN_SETTINGS, ontology) 
     QI_SET = [key for key,val in ONTOLOGY_SETTINGS["QI"].items() if val>0] 
 
     if len(QI_SET) == 0:
@@ -91,9 +89,6 @@ for ontology in ONTOLOGIES:
 
     #########################################################
     metrics_all[ontology] = metrics
-    # EQ_classes_all[ontology] = EQ_classes    
-    # total_stats_all[ontology] = total_stats
-    # EQ_stats_all[ontology] = EQ_stats
 
 #########################################################
 # SAVE RESULTS TO CSV
