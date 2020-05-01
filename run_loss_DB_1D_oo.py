@@ -7,37 +7,34 @@ from pathlib import Path
 import json
 from db import MongoRepository
 
-from analyze_data import analyze_table
+# from analyze_data import analyze_table
+from dataset import Dataset
 
 import settings.etl_settings as ETL_SETTINGS
 import settings.db_settings as DB_SETTINGS
 
 ########################################################
 # DB Parameters
-db_conn = DB_SETTINGS.db_conn_2
-# host = "localhost"
-# port = 27017
-# schema = "ETL_FHIR_CS_CARE3_K20" 
-# mongo_repo = MongoRepository( host, port, schema )   
+db_conn = DB_SETTINGS.db_conn_1  
 
 ########################################################
 # SET FILENAMES
 
-result_dir = f"{ os.path.realpath(os.getcwd()) }/Results/ETL/"
+result_dir = f"{ os.path.realpath(os.getcwd()) }/Results/ETL_2020_5/"
 Path(result_dir).mkdir(parents=True, exist_ok=True)
 
-result_file = f"{result_dir}{db_conn['SCHEMA']}_metrics_NEW.txt"
+result_file = f"{result_dir}{db_conn['SCHEMA']}_metrics_2020_5.txt"
 
 ########################################################
 # INITIALIZATION
 
 data_all = {}
-total_stats_all = {}
-EQ_classes_all = {}
-EQ_stats_all = {}
 metrics_all = {}
+# total_stats_all = {}
+# EQ_classes_all = {}
+# EQ_stats_all = {}
 
-ontologies = [ "Patient" ]
+ONTOLOGIES = [ "Patient" ]
 
 ################################################################
 # GET DATA FOR EVERY ONTOLOGY FROM REPOSITORY
@@ -45,7 +42,7 @@ ontologies = [ "Patient" ]
 
 mongo_repo = MongoRepository( db_conn["HOST"], db_conn["PORT"], db_conn["SCHEMA"] )
  
-for ontology in ontologies:        
+for ontology in ONTOLOGIES:        
     data_in = mongo_repo.get( ontology ) # keyword args
     data_in = [d for d in data_in] 
     data_all[ontology] = copy.deepcopy(data_in)
@@ -53,7 +50,7 @@ for ontology in ontologies:
 
 ############################################################
 
-for ontology in ontologies:
+for ontology in ONTOLOGIES:
 
     ########################################################
     # GET ONTOLOGY PARAMETERS
@@ -67,25 +64,26 @@ for ontology in ontologies:
     CATEGORICAL = ONTOLOGY_SETTINGS["CATEGORICAL"]  
     K = ONTOLOGY_SETTINGS["k"]  
 
-    # #########################################################
-    # # GET INPUT DATA from repository
-    # data_in = mongo_repo.get( ontology ) # keyword args
-    # data_in = [d for d in data_in]
-    # data = copy.deepcopy(data_in)
-
      #########################################################
     # GET ONTOLOGY DATA 
-    data = data_all[ontology]
+    # data = data_all[ontology]
+
+    dataset = Dataset(data_all[ontology], QI_SET, CATEGORICAL, K)
+    metrics = {
+        "GIL": dataset.calculate_GIL(),
+        "DM": dataset.calculate_DM(),
+        "CAVG": dataset.calculate_CAVG(),
+        "Number of EQs": len(dataset.EQs)
+    }
     
     #########################################################
-    (EQ_classes, total_stats, EQ_stats, metrics) = analyze_table(data, QI_SET, CATEGORICAL, K)
+    # (EQ_classes, total_stats, EQ_stats, metrics) = analyze_table(data, QI_SET, CATEGORICAL, K)
 
     #########################################################
-   
-    EQ_classes_all[ontology] = EQ_classes
     metrics_all[ontology] = metrics
-    total_stats_all[ontology] = total_stats
-    EQ_stats_all[ontology] = EQ_stats
+    # EQ_classes_all[ontology] = EQ_classes    
+    # total_stats_all[ontology] = total_stats
+    # EQ_stats_all[ontology] = EQ_stats
 
 #########################################################
 # SAVE RESULTS TO CSV
