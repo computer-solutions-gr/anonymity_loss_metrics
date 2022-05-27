@@ -20,6 +20,10 @@ input_files = get_files_in_directory(input_directory)
 
 for filepath in input_files:
     k, qi_set = get_parameters_from_filepath(filepath)
+    if k is None or qi_set in [[], None]:
+        print(f'No anonymization parameters detected in filepath {filepath}')
+        continue
+
     data = get_data_from_file(filepath)
 
     dataset = Dataset(data, qi_set, categorical_attributes, k)

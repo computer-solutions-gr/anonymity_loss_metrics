@@ -22,12 +22,19 @@ def get_files_in_directory(input_directory):
 
 
 def get_parameters_from_filepath(filepath: str):
+    k, qi_set = None, []
     base_filepath = os.path.basename(filepath)
     fp = base_filepath.split('.csv')[0]
     parts_1 = fp.split('_k=')
-    k = int(parts_1[-1])
+    try:
+        k = int(parts_1[-1])
+    except:
+        pass
     parts_2 = parts_1[0].split('QI=')
-    qi_set = parts_2[-1].split(',')
+    try:
+        qi_set = parts_2[-1].split(',')
+    except:
+        pass
     return k, qi_set
 
 def get_data_from_file(filepath):
