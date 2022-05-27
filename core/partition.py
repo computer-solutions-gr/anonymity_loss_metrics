@@ -23,20 +23,20 @@ class Partition():
         Partition_data_distinct = self.get_distinct_data()
         Partition_stats = {}
 
-        for QI in self.QI_SET:  
+        for QI in self.QI_SET:
             if self.CATEGORICAL[QI]==1:
-                try:      
+                try:
                     Partition_stats[QI] = len(Partition_data_distinct[QI])-1
                 except:
                     Partition_stats[QI] = 0
             else:
                 nums = list(map(get_number, Partition_data_distinct[QI]))
                 Partition_stats[QI]= max(nums)-min(nums)
-        
+
         # self.stats = Partition_stats
         # return Partition_stats
         return Partition_stats
-        
+
 
     #########################################################
 
@@ -54,7 +54,7 @@ class Partition():
             data_distinct[QI] = set()
 
         for doc in self.data:
-            for QI in self.QI_SET:        
+            for QI in self.QI_SET:
                 doc_field_vals = doc[QI].split("~")
                 data_distinct[QI].update(doc_field_vals)
 

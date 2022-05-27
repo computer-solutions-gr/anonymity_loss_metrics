@@ -1,7 +1,7 @@
 import itertools
 from core.partition import Partition
 
-class Dataset():   
+class Dataset():
 
 
     def __init__(self, data, QI_SET, CATEGORICAL, K):
@@ -16,21 +16,18 @@ class Dataset():
         self.K = K
         self.EQs = self.get_EQs()
         pass
-        # self.GIL = None
-        # self.DM = None
-        # self.CAVG = None
-        # self.EQs_stats = []
-    
+
+
     #############################################################################
 
     def get_EQs(self):
         # Gets all EQuivalence classes from dataset based on QI_SET
-        EQs = []    
+        EQs = []
         for key, group in itertools.groupby(self.data, lambda x: [x[QI] for QI in self.QI_SET] ):
             EQs.append( list(group) )
 
         return EQs
-    
+
     #############################################################################
     def get_partition_stats(self, partition_data):
         partition = Partition( partition_data, self.QI_SET, self.CATEGORICAL)
@@ -39,8 +36,6 @@ class Dataset():
 
     #############################################################################
 
-    # def calculate_GIL( self, EQ_stats, total_stats):
-    
     def calculate_GIL( self ):
         # Calculate Generalized Information Loss for dataset
 
@@ -48,7 +43,7 @@ class Dataset():
         total_stats = self.get_partition_stats(self.data)
 
         # Get stats for each EQ
-        EQs_stats = []       
+        EQs_stats = []
         for EQ_class in self.EQs:
             EQ_stats = self.get_partition_stats( EQ_class )
             EQs_stats.append(EQ_stats)
@@ -58,14 +53,13 @@ class Dataset():
         summ = 0
         total_records = 0
 
-        for (EQ_index, EQ_class) in enumerate( self.EQs ):
+        for (EQ_index, EQ_class) in enumerate(self.EQs):
             total_records = total_records + len(EQ_class)
             for QI in self.QI_SET:
                 # for doc in EQ_class:
-                for doc_index in range(len(EQ_class)):          
-                    part = EQs_stats[EQ_index][QI] /total_stats[QI] 
+                for doc_index in range(len(EQ_class)):
+                    part = EQs_stats[EQ_index][QI] /total_stats[QI]
                     summ = summ + part
-        
         GIL = summ / (total_records * len(self.QI_SET))
 
         return GIL
@@ -78,7 +72,7 @@ class Dataset():
         for EQ in self.EQs:
             DM = DM + (len(EQ) ** 2)
         return DM
-    
+
     ##############################################################################
 
     def calculate_CAVG( self ):
@@ -86,35 +80,7 @@ class Dataset():
         total_EQs = len( self.EQs )
         total_records = len( self.data )
         # total_records = sum( [len(EQ) for EQ in self.EQs] )
-        C_AVG = total_records / (total_EQs * self.K)        
-        return C_AVG 
+        C_AVG = total_records / (total_EQs * self.K)
+        return C_AVG
 
-    #############################################################################
-
-    # def get_EQs_stats(EQ_classes, QI_SET, CATEGORICAL):
-    # def get_EQs_stats(self):
-    #     # Returns:
-    #     # EQ_stats = [
-    #         # {
-    #         #   "address" : Number of distinct values in EQ_class 1 (categorical attr)
-    #         #   "birthDate" : max(number)-min(number) in EQ_class 1 (arithmetic attr)
-    #         # },
-    #         # {
-    #         #   "address" : Number of distinct values in EQ_class 2 (categorical attrs)
-    #         #   "birthDate" : max(number)-min(number) in EQ_class 2 (arithmetic attrs)
-    #         # } 
-    #     # ]
-    #     EQ_stats = []
-    #     # for EQ_class in EQ_classes:
-    #     for EQ_class in self.EQs:
-    #         partition = Partition(EQ_class, self.QI_SET, self.CATEGORICAL)
-    #         EQ_stats_one = partition.get_stats()
-    #         # EQ_stats_one = get_Partition_stats(EQ_class, ontology_name)
-    #         EQ_stats.append(EQ_stats_one)
-    #     self.EQs_stats = EQ_stats
-        # return EQ_stats
-
-    #############################################################################
-
-  
 

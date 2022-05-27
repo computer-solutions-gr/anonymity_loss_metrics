@@ -39,7 +39,7 @@ def set_categories(datum):
     IS_CAT = {}
     for key,d in datum.items():
         if is_number(d):
-            IS_CAT[key] = False           
+            IS_CAT[key] = False
         else:
-            IS_CAT[key] = True  
-    return IS_CAT          
+            IS_CAT[key] = True
+    return IS_CAT
